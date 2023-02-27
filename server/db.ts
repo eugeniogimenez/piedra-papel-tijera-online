@@ -1,3 +1,6 @@
+console.log("SOY CONSOLE.LOG!!!!!!!!!!!!");
+console.log("process.env.DATABASE_URL: ", process.env.DATABASE_URL);
+
 import * as admin from "firebase-admin";
 
 const serviceAccount = {
@@ -13,10 +16,12 @@ const serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT,
 };
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as any),
-  databaseURL: process.env.DATABASE_URL,
-});
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as any),
+    databaseURL: process.env.DATABASE_URL,
+  });
+}
 
 const firestore = admin.firestore();
 const rtdb = admin.database();
