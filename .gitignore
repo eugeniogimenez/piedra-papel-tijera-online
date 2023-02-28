@@ -5,3 +5,4 @@ dist
 dev.ts
 db.js
 index.js
+key.json
