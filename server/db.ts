@@ -1,8 +1,7 @@
-console.log("SOY CONSOLE.LOG!!!!!!!!!!!!");
 console.log("process.env.DATABASE_URL: ", process.env.DATABASE_URL);
 
 import * as admin from "firebase-admin";
-import * as firebaseKey from "./key.json";
+// import * as firebaseKey from "./key.json";
 
 const serviceAccount = {
   type: "service_account",
@@ -19,7 +18,7 @@ const serviceAccount = {
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert((firebaseKey as any) || serviceAccount),
+    credential: admin.credential.cert(serviceAccount as any),
     databaseURL: process.env.DATABASE_URL,
   });
 }
