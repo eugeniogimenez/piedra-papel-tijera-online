@@ -1,6 +1,6 @@
 import { firestore, rtdb } from "./db";
-
 import * as express from "express";
+import * as path from "path";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -48,6 +48,16 @@ app.post("/signup", (req, res) => {
         });
       }
     });
+});
+
+//EXPRESS STATIC
+//Express sirve también el front (en Render). Sirve la carpte "dist"
+//sin esta línea de código Render no nos daría el front
+app.use(express.static(path.join(__dirname, "../dist")));
+
+//RETURN TO INDEX.HTML
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 //API LISTEN

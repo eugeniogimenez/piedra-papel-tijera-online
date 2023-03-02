@@ -21,7 +21,7 @@ class NewRoomPage extends HTMLElement {
 
   addListeners() {
     //Listener del boton "nuevo juego";
-    const newGameButton = this.shadow.querySelector(".newgame-button");
+    const newGameButton = this.shadow.querySelector(".newgame-button") as any;
     newGameButton.addEventListener("click", () => {
       Router.go("./newroom");
     });
@@ -54,8 +54,6 @@ class NewRoomPage extends HTMLElement {
     style.textContent = `
       
       .welcome-container{
-        border: solid;
-        background-color: blue;
         padding-top: 30px;
         height: 100vh;
         background-image: url(${backgroundIMG});
@@ -90,8 +88,6 @@ class NewRoomPage extends HTMLElement {
 
       
       .hands-container{
-        border: solid;
-        background-color: pink;
         display: flex;
         gap: 35px;
         bottom: -5%;

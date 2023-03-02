@@ -21,7 +21,7 @@ class Home extends HTMLElement {
 
   addListeners() {
     //Listener del boton "nuevo juego";
-    const newGameButton = this.shadow.querySelector(".newgame-button");
+    const newGameButton = this.shadow.querySelector(".newgame-button") as any;
     newGameButton.addEventListener("click", () => {
       Router.go("./newroom");
     });
@@ -53,8 +53,6 @@ class Home extends HTMLElement {
     style.textContent = `
       
       .welcome-container{
-        border: solid;
-        background-color: blue;
         padding-top: 30px;
         height: 100vh;
         background-image: url(${backgroundIMG});
@@ -67,21 +65,18 @@ class Home extends HTMLElement {
 
       @media (min-width: 310px){
         .welcome-container{
-          background-color: red;
           padding-top: 0px;
           gap: 10px;
         }
       }
       @media (min-width: 370px){
         .welcome-container{
-          background-color: yellow;
           padding-top: 30px;
           gap: 3%;
         }
       }
       @media (min-width: 750px){
         .welcome-container{
-          background-color: green;
           padding-top: 40px;
           gap: 4%;
         }
@@ -89,8 +84,6 @@ class Home extends HTMLElement {
 
       
       .hands-container{
-        border: solid;
-        background-color: pink;
         display: flex;
         gap: 35px;
         bottom: -5%;
