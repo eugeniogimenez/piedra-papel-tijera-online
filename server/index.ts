@@ -1,9 +1,13 @@
 import { firestore, rtdb } from "./db";
 import * as express from "express";
 import * as path from "path";
+import * as cors from "cors"; //importo cors (permite al navegador usar apis)
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+//CORS
+app.use(cors()); //permite al navegador usar apis
 
 const usersCollectionRef = firestore.collection("users");
 const gameroomsCollectionRef = firestore.collection("gamerooms");
@@ -22,25 +26,22 @@ app.get("/env", (req, res) => {
 
 //1-SIGNUP (Crea un usuario en Firestore)
 app.post("/signup", (req, res) => {
-  const userEmail = req.body.email;
   const userNombre = req.body.nombre;
 
   usersCollectionRef
-    .where("email", "==", userEmail)
+    .where("nombre", "==", userNombre)
     .get()
     .then((searchResponse) => {
       //Verifica que no haya un user con el mismo email
       if (searchResponse.empty) {
         //si está vacío (empty), lo agrega.
-        usersCollectionRef
-          .add({ email: userEmail, nombre: userNombre })
-          .then((newUserRef) => {
-            //Devuelve un objeto con el id de usuario correspondiente
-            res.status(200).json({
-              id: newUserRef.id,
-              new: true,
-            });
+        usersCollectionRef.add({ nombre: userNombre }).then((newUserRef) => {
+          //Devuelve un objeto con el id de usuario correspondiente
+          res.status(200).json({
+            id: newUserRef.id,
+            new: true,
           });
+        });
       } else {
         //Si el email ya estaba registrado en "users", devuelve un mensaje
         res.status(400).json({

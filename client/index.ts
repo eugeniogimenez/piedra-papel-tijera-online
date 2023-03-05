@@ -9,6 +9,9 @@ import "./pages/newroom";
 import "./components/titles";
 import "./components/buttons";
 
+//state
+import { state } from "./state";
+
 (function () {
   console.log("Soy Main");
 })();

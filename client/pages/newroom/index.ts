@@ -1,4 +1,4 @@
-import { Router } from "@vaadin/router";
+import { state } from "../../state";
 
 const piedraIMG = require("url:../../assets/piedra.svg");
 const papelIMG = require("url:../../assets/papel.svg");
@@ -19,11 +19,35 @@ class NewRoomPage extends HTMLElement {
     this.render();
   }
 
+  //LISTENERS
   addListeners() {
     //Listener del boton "nuevo juego";
-    const newGameButton = this.shadow.querySelector(".newgame-button") as any;
-    newGameButton.addEventListener("click", () => {
-      Router.go("./newroom");
+    const pageForm = this.shadow.querySelector(".page-form") as any;
+    pageForm.addEventListener("submit", (e: any) => {
+      e.preventDefault();
+      const playerName = e.target.playername.value; //input del form
+
+      //Verifica que no se pueda ingresar con un form vacío
+      //trim(): elimina al principio y al final los espacios en blanco que pueda
+      //introducir el usuario
+      if (playerName.trim() !== "") {
+        state.setPlayerName(playerName);
+
+        const newUserData = {
+          name: playerName,
+        };
+
+        const newUserPromise = state.createNewUser(newUserData);
+
+        //Si el nombre existe arroja una advertencia al usuario
+        newUserPromise.then((res) => {
+          console.log("res: ", res);
+
+          // if (res.message) {
+          //   alert(res.message);
+          // }
+        });
+      }
     });
   }
 
@@ -35,11 +59,13 @@ class NewRoomPage extends HTMLElement {
     //Se renderiza
     mainPage.innerHTML = `
     <welcome-title>Piedra Papel o Tijera</welcome-title>
-    <h1>Soy newroom</h1>
-    // <div class="menu-div">
-    //     <menu-button class="newgame-button">Nuevo juego</menu-button>
-    //     <menu-button class="enter-room-button">Ingresar a una sala</menu-button>
-    // </div>
+
+    <form class="page-form">
+      <label class="name-label">Tu Nombre</label>
+      <input type="text" class="name-input" name="playername">
+      <button class="submit-button">Empezar</button>
+    </form>
+
     <div class="hands-container">
         <img class="welcome-hands" src="${piedraIMG}">
         <img class="welcome-hands" src=${papelIMG}>
@@ -53,77 +79,131 @@ class NewRoomPage extends HTMLElement {
     var style = document.createElement("style");
     style.textContent = `
       
-      .welcome-container{
-        padding-top: 30px;
-        height: 100vh;
-        background-image: url(${backgroundIMG});
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
+    .welcome-container {
+      padding-top: 30px;
+      height: 100vh;
+      background-image: url(${backgroundIMG});
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    @media (max-width: 330px) {
+      .welcome-container {
+        padding-top: 0px;
+        gap: 0px;
+      }
+    }
+    @media (min-width: 370px) {
+      .welcome-container {
+        gap: 1%
+      }
+    }
+    @media (min-width: 750px) {
+      .welcome-container {
+        padding-top: 40px;
         gap: 4%;
       }
-
-      @media (min-width: 310px){
-        .welcome-container{
-          background-color: red;
-          padding-top: 0px;
-          gap: 10px;
-        }
+    }
+    .hands-container {
+      display: flex;
+      gap: 35px;
+      bottom: -5%;
+    }
+    @media (min-width: 750px) {
+      .hands-container {
+        bottom: -4%;
+        gap: 70px;
       }
-      @media (min-width: 370px){
-        .welcome-container{
-          background-color: yellow;
-          padding-top: 30px;
-          gap: 3%;
-        }
+    }
+    
+    @media (max-width: 330px) {
+      .welcome-hands {
+        height: 120px;
       }
-      @media (min-width: 750px){
-        .welcome-container{
-          background-color: green;
-          padding-top: 40px;
-          gap: 4%;
-        }
+    }
+    @media (min-width: 370px) {
+      .welcome-hands {
+        height: 170px;
       }
-
-      
-      .hands-container{
-        display: flex;
-        gap: 35px;
-        bottom: -5%;
+    }
+    
+    @media (min-width: 750px) {
+      .welcome-hands {
+        height: 190px;
       }
-
-      @media (min-width: 750px) {
-        .hands-container {
-          bottom: -4%;
-          gap: 70px;
-        }
+    }
+    .page-form{
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (max-width: 400px) {
+      .page-form {
+       gap: 2px;
       }
-
-      
-      @media (min-width: 370px) {
-        .welcome-hands {
-          height: 170px;
-        }
+    }
+    .name-label{
+      font-size: 45px;
+      text-align: center;
+      letter-spacing: 0.05em;
+      font-family: Odibee Sans;
+      font-size: 45px;
+      line-height: 50px;
+    }
+    .name-input,.submit-button{
+      box-sizing: border-box;
+      height: 80px;
+      width: 310px;
+      line-height: 50px;
+      font-family: Odibee Sans;
+      padding: 0px 10px 0px 10px;
+      font-size: 45px;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+    
+    @media (max-width: 330px) {
+      .name-input,.submit-button{
+        box-sizing: border-box;
+        height: 70px;
+        width: 300px;
+        font-family: Odibee Sans;
+        padding: 0px 10px 0px 10px;
+        font-size: 35px;
+        cursor: pointer;
+        letter-spacing: 1px;
       }
-      
-      @media (min-width: 750px) {
-        .welcome-hands {
-          height: 190px;
-        }
+    }
+    .name-input{
+      background: #FFFFFF;
+      border: 10px solid #182460;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .submit-button{
+      background-color: #006CFC;
+      border: 10px solid #001997;
+      border-radius: 15px;
+      color: #D8FCFC;
+    }
+    .submit-button:active{
+      background-color: #001997;
+      border: 10px solid #006CFC;
+      color: white
+    }
+    
+    @media (min-width: 750px){
+      .submit-button,.name-input{
+        width: 340px;
       }
-      .menu-div{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      @media (max-width: 400px) {
-        .menu-div {
-         gap: 2px;
-        }
-      }
+    }
     `;
     this.shadow.appendChild(style);
+
+    //Se agregan los listeners
+    this.addListeners();
   }
 }
 
