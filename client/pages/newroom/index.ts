@@ -34,18 +34,44 @@ class NewRoomPage extends HTMLElement {
         state.setPlayerName(playerName);
 
         const newUserData = {
-          name: playerName,
+          nombre: playerName,
         };
 
         const newUserPromise = state.createNewUser(newUserData);
+        // {nombre: 'Maxi'}
 
-        //Si el nombre existe arroja una advertencia al usuario
+        //Si el nombre existe en la DB arroja una advertencia al usuario
         newUserPromise.then((res) => {
-          console.log("res: ", res);
+          if (res.message) {
+            alert(res.message);
+          }
 
-          // if (res.message) {
-          //   alert(res.message);
-          // }
+          //Si se crea un id (osea que el user no existia en la DB),
+          // se crea una Sala poniendo al usuario como dueño de ella
+          if (res.id) {
+            const newGameRoomData = {
+              userId: res.id, //firestore user id
+              ownerName: playerName, //nombre en firestore
+            };
+
+            console.log("newGameRoomData: ", newGameRoomData);
+
+            // {"userId": "3L47M9kY8CLGInhj6Key","ownerName": "Maxi"}
+
+            //Si la room se crea correctamente, se define el ID en el State
+            // const newUserId = res.id;
+            const newRoomPromise = state.createNewGameRoom(newGameRoomData); //le paso los datos de firestore para crear la sala en la rtdb
+
+            newRoomPromise.then((res) => {
+              return console.log("soy newRoomPromise con res: ", res);
+            });
+            // newRoomPromise.then((res) => {
+            //   if (res.id) {
+            //     const newRoomId = res.id;
+            //     state.setGameRoomIdCorto(newRoomId);
+            //   }
+            // });
+          }
         });
       }
     });

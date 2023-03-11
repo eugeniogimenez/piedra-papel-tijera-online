@@ -1,5 +1,6 @@
 //router
 import "./router";
+("use strict");
 
 //pages
 import "./pages/welcome";
